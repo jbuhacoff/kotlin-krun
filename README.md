@@ -6,7 +6,7 @@ The idea came from this neat
 [Cloudflare blog post](https://blog.cloudflare.com/using-go-as-a-scripting-language-in-linux/)
 about `binfmt_misc` for Go-lang. After seeing that Kotlin is
 [also ready for scripting](https://github.com/holgerbrandl/kscript),
-I wanted to run my Kotlin scripts like ./hello.kt without having to 
+I wanted to run my Kotlin scripts like `./hello.kt` without having to 
 compile them first to include all their dependencies in a single
 binary.
 
