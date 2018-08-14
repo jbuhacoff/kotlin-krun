@@ -9,8 +9,7 @@ package:
 install:
 	install -d $(DESTDIR)$(prefix)/usr/bin
 	install -m 755 src/main/script/krun.sh $(DESTDIR)$(prefix)/usr/bin/krun
-	bash install-deps.sh
-	bash install.sh
+	bash install-binfmt.sh
 
 test:
 	bash test.sh

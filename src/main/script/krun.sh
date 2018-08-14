@@ -2,6 +2,24 @@
 
 KRUN_CACHE=${KRUN_CACHE:-$HOME/.krun}
 
+find_kotlin_runtime() {
+    # sdkman
+    if [ -f $HOME/.sdkman/candidates/kotlin/current/lib/kotlin-runtime.jar ]; then
+        echo '$HOME/.sdkman/candidates/kotlin/current/lib/kotlin-runtime.jar'
+        return 0
+    fi
+
+    # anywhere else
+    found=$(find / -type f -name kotlin-runtime.jar 2>/dev/null | head -n 1 | tr ' ' ':')
+    if [ -n "$found" ]; then
+        echo "$found"
+        return 0
+    fi
+
+    echo "cannot find kotlin-runtime.jar" >&2
+    return 1
+}
+
 add_kotlin_runtime_to_jar_manifest() {
     local jarfile=$1
 
@@ -11,7 +29,14 @@ add_kotlin_runtime_to_jar_manifest() {
         source $HOME/.krunrc
     fi
 
+    # ensure we have an ivy jar for ant
     if [ -z "$KRUN_CLASSPATH" ]; then
+        KRUN_CLASSPATH=$(find_kotlin_runtime)
+        echo "KRUN_CLASSPATH=$KRUN_CLASSPATH" >> $HOME/.krunrc
+    fi
+
+    if [ -z "$KRUN_CLASSPATH" ]; then
+        echo "export KRUN_CLASSPATH or define it in ~/.krunrc" >&2
         return 1
     fi
     export KRUN_CLASSPATH

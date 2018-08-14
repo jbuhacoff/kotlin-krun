@@ -30,9 +30,15 @@ it and runs the `.jar` file that was compiled the first time. The "same"
 script is defined by the SHA-256 digest of the script file, so the time stamp,
 filename, and path are irrelevant.
 
+## Configuration
+
+### Cache location
+
 The compiled `.jar` files are stored in a `~/.krun` directory. You can change
 this by exporting the variable `KRUN_CACHE` with the path to a different location
 that is writable. 
+
+### Class path
 
 To compile Kotlin
 code, you need to have `kotlin-runtime.jar` in the class path. If you import
@@ -56,11 +62,6 @@ The following programs need to be in the `PATH`:
 * jar
 * unzip
 
-These are the commands to register the `.kt` scripts:
-
-    mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
-    echo ':kotlin:E::kt::/usr/bin/krun:OC' > /proc/sys/fs/binfmt_misc/register    
-
 And the following standard utilities also need to be in the `PATH`:
 
 * mktemp
@@ -72,6 +73,9 @@ And the following standard utilities also need to be in the `PATH`:
 
 ## How to install
 
+To register `krun` with `binfmt_misc` in a Docker container,
+you must create the container with the `--privileged` option.
+
 ### From GitHub
 
     git clone https://github.com/jbuhacoff/kotlin-krun.git
@@ -81,22 +85,6 @@ And the following standard utilities also need to be in the `PATH`:
 
     tar xzf krun-0.1.tar.gz
     ( cd krun-0.1 && make install )
-
-### In Docker
-
-If you're going to install and test or use krun in a Docker 
-container and you want to register it with binfmt_misc, create
-the container with the `--privileged` option:
-
-    make clean package
-    docker run --name krun_1 --privileged -itd --env https_proxy=$https_proxy --env http_proxy=$http_proxy ubuntu:16.04 bash
-    docker cp .build/krun-0.1.tar.gz krun_1:/tmp
-    docker exec -it krun_1 bash -c "cd /tmp && tar xzf krun-0.1.tar.gz"
-    docker exec -it krun_1 bash -c "cd /tmp/krun-0.1 && bash install-deps.sh"
-    docker exec -it krun_1 bash -c "cd /tmp/krun-0.1 && bash install.sh"
-    docker exec -it krun_1 bash -c "cd /tmp/krun-0.1 && bash test.sh"
-    docker stop krun_1
-    docker rm krun_1
 
 ## Maintenance
 
