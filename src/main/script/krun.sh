@@ -67,4 +67,8 @@ if [ ! -f $KRUN_CACHE/$ktfile_sha256.jar ]; then
     kotlinc $ktfile -d $KRUN_CACHE/$ktfile_sha256.jar
     add_kotlin_runtime_to_jar_manifest $KRUN_CACHE/$ktfile_sha256.jar
 fi
-java -jar $KRUN_CACHE/$ktfile_sha256.jar
+if which cygpath >/dev/null 2>/dev/null; then
+    java -jar $(cygpath -w $KRUN_CACHE/$ktfile_sha256.jar)
+else
+    java -jar $KRUN_CACHE/$ktfile_sha256.jar
+fi
